@@ -3,15 +3,15 @@ import ManagedObject from "sap/ui/base/ManagedObject";
 export default class View extends ManagedObject
 {
     metadata = {
-        aggregation: {
-            subviews: {
-                type: "sap.a.view.View"
-            }
-        },
+		aggregations: {
+			subviews: {
+				type: "sap.a.view.View"
+			}
+		},
         events: {
-            addedToParent: {}
-        }
-    }
+			addedToParent: { }
+		}
+    };
 
     constructor(...args)
     {
@@ -19,32 +19,34 @@ export default class View extends ManagedObject
         this.afterInit();
     }
 
-    init()
+    afterInit()
     {
-        this.$element = $(`${this.getElementTag()}`);
+
+    }
+
+    init()
+	{
+        this.$element = $(`<${this.getElementTag()}/>`);
         if (this.id !== null)
         {
             this.$element.attr("id", this.getId());
         }
         this.$container = this.$element;
-    }
-
-    afterInit()
-    {
-
-    }
+	}
 
     getElementTag()
     {
         return "div";
     }
 
+
+
     addStyleClass(...args)
     {
         this.$element.addClass(...args);
     }
 
-    removeStyeClass(...args)
+    removeStyleClass(...args)
     {
         this.$element.removeClass(...args);
     }
@@ -55,35 +57,47 @@ export default class View extends ManagedObject
     }
 
     show(...args)
+	{
+		this.$element.show(...args);
+	}
+
+	hide(...args)
+	{
+		this.$element.hide(...args);
+	}
+
+    toggle(...args)
     {
-        this.$element.show(...args);
+        this.$element.toggle(...args);
     }
 
-    hide(...args)
-    {
-        this.$element.hide(...args);
-    }
+
+
 
     placeAt(target)
     {
-        const $target = (target instanceof jQuery ? traget : $(target));
+        const $target = (target instanceof jQuery ? target : $(target));
         $target.append(this.$element);
     }
+
+
 
     $(...args)
     {
         return this.$element.find(...args);
     }
 
-    addSubview(subview)
+
+
+    addSubview(subview, $container = this.$container)
     {
         if (subview.getParent())
         {
             subview.removeFromParent();
         }
         this.addAggregation("subviews", subview);
-        subview.placeAt(this.$container);
-        this.fireAddedToParent();
+        subview.placeAt($container);
+        subview.fireAddedToParent();
         return this;
     }
 
@@ -106,7 +120,7 @@ export default class View extends ManagedObject
 
     removeAllSubviews(neverUseAgain = false)
     {
-        while(this.getSubviews().length > 0)
+        while (this.getSubviews().length > 0)
         {
             this.removeSubview(this.getSubviews()[0], neverUseAgain);
         }
@@ -120,8 +134,13 @@ export default class View extends ManagedObject
         }
     }
 
-    toString()
-    {
-        return `${this.getMetadata().getName()}[${this.getId()}]`;
-    }
+
+
+
+
+
+	toString()
+	{
+		return `${this.getMetadata().getName()}[${this.getId()}]`;
+	}
 }
