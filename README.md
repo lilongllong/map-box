@@ -1,2 +1,2 @@
 # map-box
-a simple map of gaode
+A simple web map application using SAP UI5 and ES6.

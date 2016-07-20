@@ -6,12 +6,9 @@ export default class ViewController extends ManagedObject
 {
     metadata = {
         properties: {
-            viewOptions: {
-                type: "object",
-                defaultValue: {}
-            }
+            viewOptions: { type: "object", defaultValue: {} }
         }
-    }
+    };
 
     constructor(...args)
     {
@@ -20,7 +17,7 @@ export default class ViewController extends ManagedObject
     }
 
     init()
-    {
+	{
 
     }
 
@@ -33,14 +30,16 @@ export default class ViewController extends ManagedObject
         }
         else
         {
-            throw new Error("createView(options) must return an instance of sap.a.view.View");
+            throw new Error("createView(options) must return an instance of sap.a.view.View.");
         }
     }
+
 
     getView()
     {
         return this.view;
     }
+
 
     createView(options)
     {
@@ -49,6 +48,6 @@ export default class ViewController extends ManagedObject
 
     initView()
     {
-        
+
     }
 }
