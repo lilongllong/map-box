@@ -152,8 +152,6 @@ export default class MapView extends View
     }
 
 
-
-
     invalidateSize(...args)
     {
         this.map.invalidateSize(...args);
