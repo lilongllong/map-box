@@ -1,7 +1,9 @@
 import AdaptiveMapView from "sap/a/map/MapView";
 import TileLayer from "sap/a/map/layer/TileLayer";
 
-import ExampleLayer from "./layer/ExampleLayer";
+import ServiceClient from "gd/service/ServiceClient";
+
+import NaviLayer from "./layer/NaviLayer";
 
 export default class MapView extends AdaptiveMapView
 {
@@ -17,12 +19,26 @@ export default class MapView extends AdaptiveMapView
             url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png"
         });
         this.addLayer(this.tileLayer);
-        this.exampleLayer = new ExampleLayer({
-            startLocation: [31.9790247, 118.754884],
-            endLocation: [32.04389, 118.77881]
-        });
-        this.addLayer(this.exampleLayer);
-        this.exampleLayer.drawRoute();
-        this.exampleLayer.fitBounds();
+        this.NaviLayer = new NaviLayer();
+        this.addLayer(this.NaviLayer);
+    }
+
+    searchRoute(locations)
+    {
+        if (locations && locations.length)
+        {
+            const startLocation = locations[0];
+            const endLocation = locations[locations.length - 1];
+            this.NaviLayer.applySettings({
+                startLocation,
+                endLocation
+            });
+            this.NaviLayer.drawRoute(locations);
+            this.NaviLayer.fitBounds();
+        }
+        else
+        {
+            return false;
+        }
     }
 }
