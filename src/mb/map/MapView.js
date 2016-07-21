@@ -23,14 +23,22 @@ export default class MapView extends AdaptiveMapView
         this.addLayer(this.NaviLayer);
     }
 
-    searchRoute()
+    searchRoute(locations)
     {
-        this.NaviLayer.applySettings({
-            startLocation: [31.9790247, 118.754884],
-            endLocation: [32.04389, 118.77881]
-        });
-        this.NaviLayer.drawRoute();
-        this.NaviLayer.fitBounds();
-
+        if (locations && locations.length)
+        {
+            const startLocation = locations[0];
+            const endLocation = locations[locations.length - 1];
+            this.NaviLayer.applySettings({
+                startLocation,
+                endLocation
+            });
+            this.NaviLayer.drawRoute(locations);
+            this.NaviLayer.fitBounds();
+        }
+        else
+        {
+            return false;
+        }
     }
 }

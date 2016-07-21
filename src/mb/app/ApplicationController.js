@@ -14,7 +14,8 @@ export default class ApplicationController extends AdaptiveApplicationController
     run()
     {
         ServiceClient.getInstance().attachReady(() => {
-            this.view.mapView.searchRoute();
+            const routeLocations = [ [31.9790247, 118.754884], [32.04389, 118.77881]];
+            this.view.mapView.searchRoute(routeLocations);
         });
     }
 }

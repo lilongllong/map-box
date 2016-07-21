@@ -34,11 +34,9 @@ export default class UntitledView extends Layer
         this._updateEndMarker();
     }
 
-    drawRoute()
+    drawRoute(locations)
     {
-        const locations = [this.getStartLocation(), this.getEndLocation()];
         ServiceClient.getInstance().searchRoute(locations).then(result => {
-            console.log(result);
             const multiPolyline = L.multiPolyline(result);
             this.routeGroup.addLayer(multiPolyline);
         });
