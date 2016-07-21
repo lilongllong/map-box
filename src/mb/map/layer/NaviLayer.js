@@ -39,6 +39,19 @@ export default class UntitledView extends Layer
         ServiceClient.getInstance().searchRoute(locations).then(result => {
             const multiPolyline = L.multiPolyline(result);
             this.routeGroup.addLayer(multiPolyline);
+            
+            const polylines = [];
+            result.reduce((prev, cur, index) => {
+                if (index !== 0)
+                {
+                    polylines.push([prev[prev.length - 1], cur[0]]);
+                }
+                return cur;
+            }, []);
+
+            polylines.map(loc => {
+                L.polyline(loc).addTo(this.routeGroup);
+            });
         });
     }
 
