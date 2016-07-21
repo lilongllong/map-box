@@ -2,7 +2,7 @@ import Layer from "sap/a/map/layer/Layer";
 
 import ServiceClient from "gd/service/ServiceClient";
 
-export default class UntitledView extends Layer
+export default class NaviLayer extends Layer
 {
     metadata = {
         properties: {
@@ -39,7 +39,7 @@ export default class UntitledView extends Layer
         ServiceClient.getInstance().searchRoute(locations).then(result => {
             const multiPolyline = L.multiPolyline(result);
             this.routeGroup.addLayer(multiPolyline);
-            
+
             const polylines = [];
             result.reduce((prev, cur, index) => {
                 if (index !== 0)
