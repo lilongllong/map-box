@@ -1,8 +1,6 @@
 import AdaptiveMapView from "sap/a/map/MapView";
 import TileLayer from "sap/a/map/layer/TileLayer";
 
-import ServiceClient from "gd/service/ServiceClient";
-
 import NaviLayer from "./layer/NaviLayer";
 
 export default class MapView extends AdaptiveMapView

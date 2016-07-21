@@ -21,6 +21,7 @@ export default class ServiceClient extends ManagedObject
     }
 
     static _instance = null;
+
     static getInstance()
     {
         if (gd.service.ServiceClient._instance === null)
@@ -36,19 +37,20 @@ export default class ServiceClient extends ManagedObject
             let locs = [];
             this.convertToGcj02(locations).then((result) => {
                 locs = result.map(loc => [loc.lng, loc.lat]);
+
                 this.driving.search(locs[0], locs[locs.length - 1], (status, result) => {
-                if (status === "complete" && result.info === "OK")
-                {
-                    const route = result.routes[0].steps.map(step => {
-                        return step.path.map(loc => this.gcj02towgs84(loc.lng, loc.lat));
-                    });
-                    resolve(route);
-                }
-                else
-                {
-                    reject("searchRoute() failed and code:", result);
-                }
-            });
+                    if (status === "complete" && result.info === "OK")
+                    {
+                        const route = result.routes[0].steps.map(step => {
+                            return step.path.map(loc => this._gcj02towgs84(loc.lng, loc.lat));
+                        });
+                        resolve(route);
+                    }
+                    else
+                    {
+                        reject("searchRoute() failed and code:", result);
+                    }
+                });
             });
         });
     }
@@ -57,8 +59,9 @@ export default class ServiceClient extends ManagedObject
     {
         return new Promise((resolve, reject) => {
             const locs = locations.map(loc => [L.latLng(loc).lng, L.latLng(loc).lat]);
+
             AMap.convertFrom(locs, "gps",(status, result) => {
-                if (result.info === "ok")
+                if (status === "complete" && result.info === "ok")
                 {
                     resolve(result.locations);
                 }
@@ -70,36 +73,24 @@ export default class ServiceClient extends ManagedObject
         });
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * GCJ02 转换为 WGS84
      * @param lng
      * @param lat
      * @returns {*[]}
      */
-     gcj02towgs84(lng, lat) {
+     _gcj02towgs84(lng, lat) {
          const PI = 3.1415926535897932384626;
          const a = 6378245.0;
          const ee = 0.00669342162296594323;
 
-        if (this.out_of_china(lng, lat)) {
+        if (this._out_of_china(lng, lat)) {
             return [lng, lat]
         }
         else
         {
-            let dlat = this.transformlat(lng - 105.0, lat - 35.0);
-            let dlng = this.transformlng(lng - 105.0, lat - 35.0);
+            let dlat = this._transformlat(lng - 105.0, lat - 35.0);
+            let dlng = this._transformlng(lng - 105.0, lat - 35.0);
             const radlat = lat / 180.0 * PI;
             let magic = Math.sin(radlat);
             magic = 1 - ee * magic * magic;
@@ -112,7 +103,7 @@ export default class ServiceClient extends ManagedObject
         }
     }
 
-    transformlat(lng, lat) {
+    _transformlat(lng, lat) {
         const PI = 3.1415926535897932384626;
         const a = 6378245.0;
         const ee = 0.00669342162296594323;
@@ -124,7 +115,7 @@ export default class ServiceClient extends ManagedObject
         return ret;
     }
 
-    transformlng(lng, lat) {
+    _transformlng(lng, lat) {
         const PI = 3.1415926535897932384626;
         const a = 6378245.0;
         const ee = 0.00669342162296594323;
@@ -142,7 +133,7 @@ export default class ServiceClient extends ManagedObject
      * @param lat
      * @returns {boolean}
      */
-    out_of_china(lng, lat) {
+    _out_of_china(lng, lat) {
         return (lng < 72.004 || lng > 137.8347) || ((lat < 0.8293 || lat > 55.8271) || false);
     }
 }
