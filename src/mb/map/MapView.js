@@ -31,7 +31,7 @@ export default class MapView extends AdaptiveMapView
                 startLocation,
                 endLocation
             });
-            this.NaviLayer.drawRoute(locations);
+            this.NaviLayer.drawRoutes(locations);
             this.NaviLayer.fitBounds();
         }
         else

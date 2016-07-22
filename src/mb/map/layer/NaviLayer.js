@@ -34,9 +34,9 @@ export default class NaviLayer extends Layer
         this._updateEndMarker();
     }
 
-    drawRoute(locations)
+    drawRoute(startLocation, endLocation)
     {
-        ServiceClient.getInstance().searchRoute(locations).then(result => {
+        ServiceClient.getInstance().searchRoute(startLocation, endLocation).then(result => {
             const multiPolyline = L.multiPolyline(result);
             this.routeGroup.addLayer(multiPolyline);
 
@@ -53,6 +53,23 @@ export default class NaviLayer extends Layer
                 L.polyline(loc).addTo(this.routeGroup);
             });
         });
+    }
+
+    drawRoutes(locations)
+    {
+        this.routeGroup.clearLayers();
+        if (locations && locations.length)
+        {
+            locations.reduce((prev, cur) => {
+                if (prev !== null)
+                {
+                    this.drawRoute(prev, cur);
+                }
+                return cur;
+            }, null);
+
+        }
+
     }
 
     _updateStartMarker()

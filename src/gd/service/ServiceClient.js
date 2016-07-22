@@ -31,11 +31,11 @@ export default class ServiceClient extends ManagedObject
         return gd.service.ServiceClient._instance;
     }
 
-    searchRoute(locations)
+    searchRoute(startLocation, endLocation)
     {
         return new Promise((resolve, reject) => {
             let locs = [];
-            this.convertToGcj02(locations).then((result) => {
+            this.convertToGcj02([startLocation, endLocation]).then((result) => {
                 locs = result.map(loc => [loc.lng, loc.lat]);
 
                 this.driving.search(locs[0], locs[locs.length - 1], (status, result) => {
