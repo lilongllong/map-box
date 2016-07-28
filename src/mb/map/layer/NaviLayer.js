@@ -18,6 +18,8 @@ export default class NaviLayer extends Layer
         this.container.addLayer(this.routeGroup);
         this.markerGroup = L.featureGroup();
         this.container.addLayer(this.markerGroup);
+        this.PoiMarkerGroup = L.featureGroup();
+        this.container.addLayer(this.markerGroup);
     }
 
     setStartLocation(location)
@@ -50,7 +52,8 @@ export default class NaviLayer extends Layer
             }, []);
 
             polylines.map(loc => {
-                L.polyline(loc).addTo(this.routeGroup);
+                this.routeGroup.addLayer(L.polyline(loc));
+                //L.polyline(loc).addTo(this.routeGroup);
             });
         });
     }
@@ -76,7 +79,7 @@ export default class NaviLayer extends Layer
     {
         if (!this.startMarker)
         {
-            this.startMarker = L.circleMarker(this.getStartLocation(), 8);
+            this.startMarker = L.circleMarker(this.getStartLocation(), 8).bindPopup("start");
             this.startMarker.setStyle({
                 color: "green",
                 opacity: 0.8,
@@ -95,7 +98,7 @@ export default class NaviLayer extends Layer
     {
         if (!this.endMarker)
         {
-            this.endMarker = L.circleMarker(this.getEndLocation(), 8);
+            this.endMarker = L.circleMarker(this.getEndLocation(), 8).bindPopup("end");
             this.endMarker.setStyle({
                 color: "red",
                 opacity: 0.8,
