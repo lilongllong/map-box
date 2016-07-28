@@ -10,9 +10,18 @@ export default class ServiceClient extends ManagedObject
 
     init()
     {
-        AMap.service([ "AMap.Driving" ], () => {
+        AMap.service([ "AMap.Driving", "AMap.Autocomplete", "AMap.Geocoder"], () => {
             this.driving = new AMap.Driving({
                 city: "南京市"
+            });
+            const options = {
+                city: "南京"
+            };
+
+            this.autocomplete = new AMap.Autocomplete(options);
+            this.geoCoder = new AMap.Geocoder({
+                radius: 10,
+                extensions: ""
             });
             window.setTimeout(() => {
                 this.fireReady();
@@ -31,6 +40,27 @@ export default class ServiceClient extends ManagedObject
         return gd.service.ServiceClient._instance;
     }
 
+    searchPoiAutocomplete(keyword)
+    {
+        return new Promise((resolve, reject) => {
+            this.autocomplete.search(keyword, (status, result) => {
+                    if (status === "complete" && result.info === "OK")
+                    {
+                        const tips = result.tips.map(tip => {
+                            tip.location = this.convertToWgs84(tip.location);
+                            return tip;
+                        });
+
+                        resolve(tips);
+                    }
+                    else
+                    {
+                        resolve([]);
+                    }
+            });
+        });
+    }
+
     searchRoute(startLocation, endLocation)
     {
         return new Promise((resolve, reject) => {
@@ -44,6 +74,7 @@ export default class ServiceClient extends ManagedObject
                         const route = result.routes[0].steps.map(step => {
                             return step.path.map(loc => this._gcj02towgs84(loc.lng, loc.lat));
                         });
+                    //    console.log(result.routes[0]);
                         resolve(route);
                     }
                     else
@@ -55,12 +86,42 @@ export default class ServiceClient extends ManagedObject
         });
     }
 
+    geoCoderFromGaode(location)
+    {
+        return new Promise((resolve, reject) => {
+            this.convertToGcj02(location).then((result) => {
+                let loc = new AMap.LngLat(result[0].lng, result[0].lat);
+
+                this.geoCoder.getAddress(loc, (status, result) => {
+                    if (status === "complete" && result.info === "OK")
+                    {
+                        resolve(result.regeocode);
+                    }
+                    else
+                    {
+                        resolve(null);
+                    }
+                });
+            });
+        });
+    }
+
     convertToGcj02(locations)
     {
         return new Promise((resolve, reject) => {
-            const locs = locations.map(loc => [L.latLng(loc).lng, L.latLng(loc).lat]);
+            let locs = null;
+            if (!Array.isArray(locations))
+            {
+                locs = [locations];
+            }
+            else
+            {
+                locs = locations;
+            }
 
-            AMap.convertFrom(locs, "gps",(status, result) => {
+            const newLocs = locs.map(loc => [L.latLng(loc).lng, L.latLng(loc).lat]);
+
+            AMap.convertFrom(newLocs, "gps",(status, result) => {
                 if (status === "complete" && result.info === "ok")
                 {
                     resolve(result.locations);
@@ -71,6 +132,15 @@ export default class ServiceClient extends ManagedObject
                 }
             });
         });
+    }
+
+    convertToWgs84(locations)
+    {
+        if (!Array.isArray(locations))
+        {
+            locations = [locations]
+        }
+        return locations.map(loc => this._gcj02towgs84(loc.lng, loc.lat));
     }
 
     /**

@@ -1,15 +1,17 @@
 import AdaptiveMapView from "sap/a/map/MapView";
 import TileLayer from "sap/a/map/layer/TileLayer";
 
+import ServiceClient from "../../gd/service/ServiceClient";
+
 import NaviLayer from "./layer/NaviLayer";
 
 export default class MapView extends AdaptiveMapView
 {
-    afterInit()
-    {
-        super.afterInit();
-        this.addStyleClass("mb-map-view");
-    }
+    metadata = {
+        events: {
+            queryClickChanged: { parameters: { location: "object"} }
+        }
+    };
 
     initLayers()
     {
@@ -17,26 +19,25 @@ export default class MapView extends AdaptiveMapView
             url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png"
         });
         this.addLayer(this.tileLayer);
-        this.NaviLayer = new NaviLayer();
-        this.addLayer(this.NaviLayer);
+        this.naviLayer = new NaviLayer();
+        this.addLayer(this.naviLayer);
+        this.poiMarker = null;
+        this.selectedPoiMarker = null; 
     }
 
-    searchRoute(locations)
+    afterInit()
     {
-        if (locations && locations.length)
+        super.afterInit();
+        this.addStyleClass("mb-map-view");
+        this.map.on("click", this._map_onclick.bind(this));
+    }
+
+
+    _map_onclick(e)
+    {
+        if (e.originalEvent.ctrlKey === true)
         {
-            const startLocation = locations[0];
-            const endLocation = locations[locations.length - 1];
-            this.NaviLayer.applySettings({
-                startLocation,
-                endLocation
-            });
-            this.NaviLayer.drawRoutes(locations);
-            this.NaviLayer.fitBounds();
-        }
-        else
-        {
-            return false;
+            this.fireQueryClickChanged([e.latlng.lat, e.latlng.lng]);
         }
     }
 }
