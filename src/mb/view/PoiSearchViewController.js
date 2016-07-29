@@ -58,7 +58,8 @@ export default class PoiSearchViewController extends ViewController
     _suggestionListView_onItemclick(e)
     {
         const item  = e.getParameters().item;
-        this.view.setPoi({name: item.name, location: item.location});
+        const model = sap.ui.getCore().getModel();
+        model.forceSetProperty("/selectedPoi", {name: item.name, location: item.location});
         this.view.suggestionListView.hideSuggestion();
     }
 }
