@@ -16,7 +16,10 @@ export default class PoiSearchView extends View
     };
     afterInit()
     {
-        this.poiSearchView = $(`<input class="searchInput" type="search" placeholder="搜索" />`);
+        /*
+        这里做的不好，应该四部分各做成一个view, 这样可以单独添加监听和操控
+        */
+        this.poiSearchView = $(`<div class="iconfont icon-logo"></div><input class="searchInput" type="search" placeholder="搜索" /><div class="iconfont icon-search"></div> <div class="iconfont icon-dir"></div> `);
         let inputTimer = null;
         this.poiSearchView.on("input", () => {
             if (inputTimer)
@@ -32,6 +35,9 @@ export default class PoiSearchView extends View
 
         this.poiSearchView.on("keydown", this._keydown.bind(this));
         this.$container.append(this.poiSearchView);
+        this.$(".icon-search").on("click", () => {
+            this.fireSearchPoi();
+        });
 
         this.suggestionListView = new SuggestionListView("suggestion-list-view");
         this.suggestionListView.hideSuggestion();
@@ -40,12 +46,12 @@ export default class PoiSearchView extends View
 
     getText()
     {
-        return this.poiSearchView.val().trim();
+        return this.$(".searchInput").val().trim();
     }
 
     setText(keyword)
     {
-        this.poiSearchView.val(keyword);
+        this.$(".searchInput").val(keyword);
     }
 
     setPoi(value)
@@ -63,6 +69,7 @@ export default class PoiSearchView extends View
         if (value !== null)
         {
             this.setText(value.name);
+            this.view.suggestionListView.showSuggestion();
         }
     }
 

@@ -29,6 +29,14 @@ export default class PoiSearchViewController extends ViewController
     {
         ServiceClient.getInstance().searchPoiAutocomplete(this.view.getText()).then((result) => {
             this.view.suggestionListView.setItems(result);
+            if (result && result.length)
+            {
+                this.view.suggestionListView.showSuggestion();
+            }
+            else
+            {
+                this.view.suggestionListView.hideSuggestion();
+            }
         });
     }
 
@@ -41,7 +49,7 @@ export default class PoiSearchViewController extends ViewController
                 {
                     sap.ui.getCore().getModel().setProperty("/selectedPoi", {name: result[0].name, location: result[0].location});
                     this.view.setText(result[0].name);
-                    this.view.suggestionListView.show();
+                    this.view.suggestionListView.hide();
                 }
             });
         }
