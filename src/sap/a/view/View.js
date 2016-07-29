@@ -136,9 +136,6 @@ export default class View extends ManagedObject
 
 
 
-
-
-
 	toString()
 	{
 		return `${this.getMetadata().getName()}[${this.getId()}]`;
