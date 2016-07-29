@@ -12,25 +12,37 @@ export default class ApplicationController extends AdaptiveApplicationController
     init()
     {
         super.init();
+    }
+
+    afterInit()
+    {
+        super.afterInit();
         this._initModel();
+        this._initMapViewController();
+        this._initPoiSearchViewController();
     }
 
     createView(options)
     {
-        return new Application(options);
+        return new Application("application",options);
     }
 
     run()
     {
-        this._initMapViewController();
-        this._initPoiSearchViewController();
+
     }
 
     _initModel()
     {
         const model = new Model();
         sap.ui.getCore().setModel(model);
+        this.setModel(model);
+
+        // const gisModel = new Model();
+        // sap.ui.getCore().setModel(model, "gis");
+        // this.setModel(model, "gis");
     }
+
     _initMapViewController()
     {
         this.mapViewController = new MapViewController("map-view-controller", {
