@@ -1,7 +1,5 @@
 import Layer from "sap/a/map/layer/Layer";
 
-import ServiceClient from "gd/service/ServiceClient";
-
 export default class NaviLayer extends Layer
 {
     metadata = {
@@ -36,25 +34,23 @@ export default class NaviLayer extends Layer
         this._updateEndMarker();
     }
 
-    drawRoute(startLocation, endLocation)
+    drawRoute(route)
     {
-        ServiceClient.getInstance().searchRoute(startLocation, endLocation).then(result => {
-            const multiPolyline = L.multiPolyline(result);
-            this.routeGroup.addLayer(multiPolyline);
+        const multiPolyline = L.multiPolyline(route);
+        this.routeGroup.addLayer(multiPolyline);
 
-            const polylines = [];
-            result.reduce((prev, cur, index) => {
-                if (index !== 0)
-                {
-                    polylines.push([prev[prev.length - 1], cur[0]]);
-                }
-                return cur;
-            }, []);
+        const polylines = [];
+        result.reduce((prev, cur, index) => {
+            if (index !== 0)
+            {
+                polylines.push([prev[prev.length - 1], cur[0]]);
+            }
+            return cur;
+        }, []);
 
-            polylines.map(loc => {
-                this.routeGroup.addLayer(L.polyline(loc));
-                //L.polyline(loc).addTo(this.routeGroup);
-            });
+        polylines.map(loc => {
+            this.routeGroup.addLayer(L.polyline(loc));
+            //L.polyline(loc).addTo(this.routeGroup);
         });
     }
 

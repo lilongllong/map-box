@@ -1,7 +1,5 @@
 import AdaptiveApplication from "sap/a/app/Application";
 
-
-
 export default class Application extends AdaptiveApplication
 {
     afterInit()
@@ -9,4 +7,6 @@ export default class Application extends AdaptiveApplication
         super.afterInit();
         this.addStyleClass("mb-app");
     }
+
+
 }
