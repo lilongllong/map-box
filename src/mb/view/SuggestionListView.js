@@ -9,11 +9,11 @@ export default class SuggestionListView extends BaseListView
 
     hideSuggestion()
     {
-        this.$element.hide();
+        this.hide();
     }
 
     showSuggestion()
     {
-        this.$element.show();
+        this.show();
     }
 }

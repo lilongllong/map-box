@@ -11,7 +11,8 @@ export default class PoiSearchViewController extends ViewController
     createView(options)
     {
         const opts = $.extend({
-            poi: "{/selectedPoi}"
+            poi: "{/selectedPoi}",
+            queryPoi: "{/queryPoi}"
         }, options);
         return new PoiSearchView("mb-poi-search-view", opts);
     }
@@ -20,8 +21,6 @@ export default class PoiSearchViewController extends ViewController
     {
         this.view.attachInputChanged(this._input_onchange.bind(this));
         this.view.attachSearchPoi(this._searchPoi.bind(this));
-        const queryPoiBinding = sap.ui.getCore().getModel().bindProperty("/queryPoi");
-        queryPoiBinding.attachChange(this._queryPoiChange.bind(this));
 
         this.view.suggestionListView.attachItemClick(this._suggestionListView_onItemclick.bind(this));
     }
@@ -30,6 +29,14 @@ export default class PoiSearchViewController extends ViewController
     {
         ServiceClient.getInstance().searchPoiAutocomplete(this.view.getText()).then((result) => {
             this.view.suggestionListView.setItems(result);
+            if (result && result.length)
+            {
+                this.view.suggestionListView.showSuggestion();
+            }
+            else
+            {
+                this.view.suggestionListView.hideSuggestion();
+            }
         });
     }
 
@@ -42,22 +49,17 @@ export default class PoiSearchViewController extends ViewController
                 {
                     sap.ui.getCore().getModel().setProperty("/selectedPoi", {name: result[0].name, location: result[0].location});
                     this.view.setText(result[0].name);
-                    this.view.suggestionListView.show();
+                    this.view.suggestionListView.hide();
                 }
             });
         }
     }
 
-    _queryPoiChange()
-    {
-        const queryPoi = sap.ui.getCore().getModel().getProperty("/queryPoi");
-        this.view.setText(queryPoi.name);
-    }
-
     _suggestionListView_onItemclick(e)
     {
         const item  = e.getParameters().item;
-        this.view.setPoi({name: item.name, location: item.location});
+        const model = sap.ui.getCore().getModel();
+        model.forceSetProperty("/selectedPoi", {name: item.name, location: item.location});
         this.view.suggestionListView.hideSuggestion();
     }
 }
