@@ -11,7 +11,8 @@ export default class PoiSearchViewController extends ViewController
     createView(options)
     {
         const opts = $.extend({
-            poi: "{/selectedPoi}"
+            poi: "{/selectedPoi}",
+            queryPoi: "{/queryPoi}"
         }, options);
         return new PoiSearchView("mb-poi-search-view", opts);
     }
@@ -20,8 +21,6 @@ export default class PoiSearchViewController extends ViewController
     {
         this.view.attachInputChanged(this._input_onchange.bind(this));
         this.view.attachSearchPoi(this._searchPoi.bind(this));
-        const queryPoiBinding = sap.ui.getCore().getModel().bindProperty("/queryPoi");
-        queryPoiBinding.attachChange(this._queryPoiChange.bind(this));
 
         this.view.suggestionListView.attachItemClick(this._suggestionListView_onItemclick.bind(this));
     }
@@ -46,12 +45,6 @@ export default class PoiSearchViewController extends ViewController
                 }
             });
         }
-    }
-
-    _queryPoiChange()
-    {
-        const queryPoi = sap.ui.getCore().getModel().getProperty("/queryPoi");
-        this.view.setText(queryPoi.name);
     }
 
     _suggestionListView_onItemclick(e)

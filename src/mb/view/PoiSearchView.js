@@ -6,7 +6,8 @@ export default class PoiSearchView extends View
 {
     metadata = {
         properties: {
-            poi: {type: "object", bindable: true}
+            poi: {type: "object", bindable: true},
+            queryPoi: {type: "object", bindable: true}
         },
         events: {
             inputChanged: { parameters: { param1: "string" } },
@@ -50,6 +51,15 @@ export default class PoiSearchView extends View
     setPoi(value)
     {
         this.setProperty("poi", value);
+        if (value !== null)
+        {
+            this.setText(value.name);
+        }
+    }
+
+    setQueryPoi(value)
+    {
+        this.setProperty("queryPoi", value);
         if (value !== null)
         {
             this.setText(value.name);
