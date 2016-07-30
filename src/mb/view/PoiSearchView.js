@@ -2,82 +2,37 @@ import View from "sap/a/view/View";
 
 import SuggestionListView from "./SuggestionListView";
 
-export default class PoiSearchView extends View
+export default class POISearchView extends View
 {
     metadata = {
         properties: {
-            poi: {type: "object", bindable: true},
-            queryPoi: {type: "object", bindable: true}
+            poi: { type: "object", bindable: true },
+            label: { type: "string" },
+            placeholder: { type: "string"}
         },
         events: {
-            inputChanged: { parameters: { param1: "string" } },
-            searchPoi: { parameters: {}}
+            inputChanged: { parameters: {  } },
+            itemSelected: { parameters: { item: "object" } }
         }
     };
+
     afterInit()
     {
-        /*
-        这里做的不好，应该四部分各做成一个view, 这样可以单独添加监听和操控
-        */
-        this.poiSearchView = $(`<div class="iconfont icon-logo"></div><input class="searchInput" type="search" placeholder="搜索" /><div class="iconfont icon-search"></div> <div class="iconfont icon-dir"></div> `);
-        let inputTimer = null;
-        this.poiSearchView.on("input", () => {
-            if (inputTimer)
-            {
-                window.clearTimeout(inputTimer);
-                inputTimer = null;
-            }
-            inputTimer = setTimeout(() => {
-                this.fireInputChanged();
-            }, 300);
-
-        });
-
-        this.poiSearchView.on("keydown", this._keydown.bind(this));
-        this.$container.append(this.poiSearchView);
-        this.$(".icon-search").on("click", () => {
-            this.fireSearchPoi();
-        });
-
-        this.suggestionListView = new SuggestionListView("suggestion-list-view");
-        this.suggestionListView.hideSuggestion();
-        this.addSubview(this.suggestionListView);
+        super.afterInit();
+        this.addStyleClass("poi-search-view");
+        this.$searchView = $(`<div class="search-view">
+                                <div class="text">${this.getProperty("label")}</div>
+                                <input type="text" placeholder=${this.getProperty("placeholder")} />
+                                </div>`);
+        this.$container.append(this.$searchView);
+        this.$SuggestionListView = new SuggestionListView("suggestion-list-view");
+        this.$SuggestionListView.attachItemClick(this._onItemClick.bind(this));
+        this.addSubview(this.$SuggestionListView, this.$(".search-view"));
     }
 
-    getText()
+    _onItemClick(e)
     {
-        return this.$(".searchInput").val().trim();
-    }
-
-    setText(keyword)
-    {
-        this.$(".searchInput").val(keyword);
-    }
-
-    setPoi(value)
-    {
-        this.setProperty("poi", value);
-        if (value !== null)
-        {
-            this.setText(value.name);
-        }
-    }
-
-    setQueryPoi(value)
-    {
-        this.setProperty("queryPoi", value);
-        if (value !== null)
-        {
-            this.setText(value.name);
-            this.view.suggestionListView.showSuggestion();
-        }
-    }
-
-    _keydown(e)
-    {
-        if (e.keyCode === 13)
-        {
-            this.fireSearchPoi();
-        }
+        const item = e.getParameters().item;
+        this.fireItemSelected({item});
     }
 }

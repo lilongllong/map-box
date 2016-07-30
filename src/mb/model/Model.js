@@ -5,8 +5,8 @@ export default class Model extends JSONModel
     constructor(...args)
     {
         super({
-            selectedPoi: null,
-            queryPoi: null
+            originPoi: {name: null, location: null},
+            destinationPoi: {name: null, location: null}
         });
     }
 

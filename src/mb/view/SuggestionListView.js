@@ -5,15 +5,19 @@ export default class SuggestionListView extends BaseListView
     afterInit()
     {
         super.afterInit();
+        this.addStyleClass("suggestion-list-view");
     }
 
-    hideSuggestion()
+    $createNewItem(itemType = 0)
     {
-        this.hide();
+        const $item = super.$createNewItem(0);
+        $item.append(`<span class="district"></span>`)
+        return $item;
     }
 
-    showSuggestion()
+    renderItem(item, $item)
     {
-        this.show();
+        super.renderItem(item, $item);
+        $item.children(".district").val(item.district);
     }
 }
