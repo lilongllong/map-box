@@ -9,16 +9,12 @@ export default class MapViewController extends AdaptiveMapViewController
 
     createView(options)
     {
-        const opts = $.extend({
-            selectedPoi: "{/selectedPoi}",
-            queryPoi: "{/queryPoi}"
-        }, options);
-        return new MapView("map-view", opts);
+        return new MapView("map-view", options);
     }
 
     initView()
     {
-        this.view.attachEvent("queryClickChanged", this._queryClickChanged_onchange.bind(this));
+
     }
 
     searchRoute(startPoi, endPoi)
@@ -38,29 +34,5 @@ export default class MapViewController extends AdaptiveMapViewController
         {
             return false;
         }
-    }
-
-    searchPoi(keyword)
-    {
-        if (keyword && keyword !== "")
-        {
-            ServiceClient.getInstance().searchPoiAutocomplete(keyword).then(result => {
-            });
-        }
-        else
-        {
-            console.log("输入为空");
-        }
-    }
-
-    _queryClickChanged_onchange(e)
-    {
-        const location = e.getParameters("location");
-        ServiceClient.getInstance().geoCoderFromGaode(e.getParameters("location")).then((result) => {
-            if (result !== null)
-            {
-                sap.ui.getCore().getModel().setProperty("/queryPoi", {name: result.formattedAddress, location});
-            }
-        });
     }
 }

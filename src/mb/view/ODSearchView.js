@@ -39,7 +39,6 @@ export default class ODSearchView extends View
 
     _onexchanged(e)
     {
-        console.log("交换");
         this.fireExchanged();
     }
 

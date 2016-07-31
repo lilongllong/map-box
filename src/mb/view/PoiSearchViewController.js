@@ -29,7 +29,6 @@ export default class POISearchViewController extends ViewController
         if (keyword && keyword !== "")
         {
             ServiceClient.getInstance().searchPoiAutocomplete(keyword).then((result) => {
-                console.log(result);
                 this.view.$suggestionListView.setItems(result);
                 this.view.$suggestionListView.show();
             });

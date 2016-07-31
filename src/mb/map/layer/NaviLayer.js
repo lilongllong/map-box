@@ -16,8 +16,6 @@ export default class NaviLayer extends Layer
         this.container.addLayer(this.routeGroup);
         this.markerGroup = L.featureGroup();
         this.container.addLayer(this.markerGroup);
-        this.PoiMarkerGroup = L.featureGroup();
-        this.container.addLayer(this.markerGroup);
     }
 
     setStartLocation(location)
@@ -36,7 +34,7 @@ export default class NaviLayer extends Layer
 
     drawRoute(route)
     {
-        console.log(route, "3");
+        this.routeGroup.clearLayers();
         const multiPolyline = L.multiPolyline(route);
         this.routeGroup.addLayer(multiPolyline);
 
