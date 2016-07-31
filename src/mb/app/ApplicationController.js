@@ -51,10 +51,10 @@ export default class ApplicationController extends AdaptiveApplicationController
     {
         this.ODSearchViewController = new ODSearchViewController("mb-OD-search-view-controller");
         this.addChildViewController(this.ODSearchViewController);
-        this.ODSearchViewController.view.attachSearchRoute(this._searchRoute.bind(this));
+        this.ODSearchViewController.attachDrawRoute(this._drawRoute.bind(this));
     }
 
-    _searchRoute(e)
+    _drawRoute(e)
     {
         const model = sap.ui.getCore().getModel();
         const startPoi = model.getProperty("/originPoi");

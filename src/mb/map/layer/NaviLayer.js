@@ -36,22 +36,23 @@ export default class NaviLayer extends Layer
 
     drawRoute(route)
     {
+        console.log(route, "3");
         const multiPolyline = L.multiPolyline(route);
         this.routeGroup.addLayer(multiPolyline);
 
-        const polylines = [];
-        result.reduce((prev, cur, index) => {
-            if (index !== 0)
-            {
-                polylines.push([prev[prev.length - 1], cur[0]]);
-            }
-            return cur;
-        }, []);
-
-        polylines.map(loc => {
-            this.routeGroup.addLayer(L.polyline(loc));
-            //L.polyline(loc).addTo(this.routeGroup);
-        });
+        // const polylines = [];
+        // route.reduce((prev, cur, index) => {
+        //     if (index !== 0)
+        //     {
+        //         polylines.push([prev[prev.length - 1], cur[0]]);
+        //     }
+        //     return cur;
+        // }, []);
+        //
+        // polylines.map(loc => {
+        //     this.routeGroup.addLayer(L.polyline(loc));
+        //     //L.polyline(loc).addTo(this.routeGroup);
+        // });
     }
 
     drawRoutes(locations)

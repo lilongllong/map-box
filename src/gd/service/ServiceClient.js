@@ -79,11 +79,14 @@ export default class ServiceClient extends ManagedObject
             this.convertToGcj02([startLocation, endLocation]).then((result) => {
                 locs = result.map(loc => [loc.lng, loc.lat]);
 
-                this.driving.search(locs[0], locs[locs.length - 1], (status, result) => {
+                this.driving.search(locs[0], locs[1], (status, result) => {
                     if (status === "complete" && result.info === "OK")
                     {
                         const route = result.routes[0].steps.map(step => {
-                            return step.path.map(loc => _gcj02towgs84(loc.lng, loc.lat));
+                            return step.path.map(loc => {
+                                const loc84 = _gcj02towgs84(loc);
+                                return L.latLng(loc84.lat, loc84.lng);
+                            });
                         });
                         resolve(route);
                     }

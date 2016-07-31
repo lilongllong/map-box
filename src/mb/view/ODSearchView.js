@@ -27,8 +27,8 @@ export default class ODSearchView extends View
                                 </div>
                                 <button class="search-route-button">搜索路线</button>`);
         this.$container.append(this.$ODSearchView);
-        this.$ODSearchView.children(".icon-exchange").on("click", this._onexchanged.bind(this));
-        this.$ODSearchView.children("button").on("click", this._onsearchRoute.bind(this));
+        this.$container.children(".icon-exchange").on("click", this._onexchanged.bind(this));
+        this.$container.children("button").on("click", this._onsearchRoute.bind(this));
     }
 
     setOriginPoi(poi)
@@ -39,6 +39,7 @@ export default class ODSearchView extends View
 
     _onexchanged(e)
     {
+        console.log("交换");
         this.fireExchanged();
     }
 

@@ -5,11 +5,20 @@ import POISearchViewController from "./POISearchViewController";
 
 export default class ODSearchViewController extends ViewController
 {
+    metadata = {
+        events: {
+            drawRoute: { parameters: { } }
+        }
+    };
+
     afterInit()
     {
         super.afterInit();
+        this.model = sap.ui.getCore().getModel();
         this._initChildControllers();
         this.view.attachExchanged(this._onexchanged.bind(this));
+        this.view.attachSearchRoute(this._onsearchRoute.bind(this));
+
     }
 
     createView(options)
@@ -33,6 +42,12 @@ export default class ODSearchViewController extends ViewController
                 placeholder: "搜索起点"
             }
         });
+
+        this.originController.attachSelected((e) => {
+            const originPoi = e.getParameters().selectedPoi;
+            this.model.forceSetProperty("/originPoi", originPoi);
+        });
+
         const $target = this.view.$(".origin-search");
         this.addChildViewController(this.originController, $target);
     }
@@ -46,6 +61,12 @@ export default class ODSearchViewController extends ViewController
                 placeholder: "搜索终点"
             }
         });
+
+        this.destinationController.attachSelected((e) => {
+            const destinationPoi = e.getParameters().selectedPoi;
+            this.model.forceSetProperty("/destinationPoi", destinationPoi);
+        });
+
         const $target = this.view.$(".destination-search");
         this.addChildViewController(this.destinationController, $target);
     }
@@ -56,8 +77,12 @@ export default class ODSearchViewController extends ViewController
         const oriPoi = model.getProperty("/originPoi");
         const destPoi = model.getProperty("/destinationPoi");
 
-        model.setProperty("/originPoi", oriPoi);
-        model.setProperty("/destinationPoi", destPoi);
+        model.setProperty("/originPoi", destPoi);
+        model.setProperty("/destinationPoi", oriPoi);
     }
 
+    _onsearchRoute(e)
+    {
+        this.fireDrawRoute();
+    }
 }

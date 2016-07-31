@@ -26,13 +26,12 @@ export default class MapViewController extends AdaptiveMapViewController
         if (startPoi && endPoi)
         {
             ServiceClient.getInstance().searchRoute(startPoi.location, endPoi.location).then(result => {
-                this.view.NaviLayer.applySettings({
+                this.view.naviLayer.applySettings({
                     startLocation: startPoi.location,
                     endLocation: endPoi.location
                 });
-
-                this.view.NaviLayer.drawRoutes(result);
-                this.view.NaviLayer.fitBounds();
+                this.view.naviLayer.drawRoute(result);
+                this.view.naviLayer.fitBounds();
             });
         }
         else

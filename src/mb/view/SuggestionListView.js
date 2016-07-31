@@ -18,6 +18,6 @@ export default class SuggestionListView extends BaseListView
     renderItem(item, $item)
     {
         super.renderItem(item, $item);
-        $item.children(".district").val(item.district);
+        $item.children(".district").html(item.district);
     }
 }
