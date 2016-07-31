@@ -1,6 +1,6 @@
 import AdaptiveApplicationController from "sap/a/app/ApplicationController";
 import MapViewController from "../map/MapViewController";
-import PoiSearchViewController from "../view/PoiSearchViewController";
+import ODSearchViewController from "../view/ODSearchViewController";
 
 import ServiceClient from "gd/service/ServiceClient";
 
@@ -19,7 +19,7 @@ export default class ApplicationController extends AdaptiveApplicationController
         super.afterInit();
         this._initModel();
         this._initMapViewController();
-        this._initPoiSearchViewController();
+        this._initODSearchViewController();
     }
 
     createView(options)
@@ -37,10 +37,6 @@ export default class ApplicationController extends AdaptiveApplicationController
         const model = new Model();
         sap.ui.getCore().setModel(model);
         this.setModel(model);
-
-        // const gisModel = new Model();
-        // sap.ui.getCore().setModel(model, "gis");
-        // this.setModel(model, "gis");
     }
 
     _initMapViewController()
@@ -51,9 +47,19 @@ export default class ApplicationController extends AdaptiveApplicationController
         this.addChildViewController(this.mapViewController);
     }
 
-    _initPoiSearchViewController()
+    _initODSearchViewController()
     {
-        this.poiSearchViewController = new PoiSearchViewController("mb-poi-search-view-controller");
-        this.addChildViewController(this.poiSearchViewController);
+        this.ODSearchViewController = new ODSearchViewController("mb-OD-search-view-controller");
+        this.addChildViewController(this.ODSearchViewController);
+        this.ODSearchViewController.attachDrawRoute(this._drawRoute.bind(this));
+    }
+
+    _drawRoute(e)
+    {
+        const model = sap.ui.getCore().getModel();
+        const startPoi = model.getProperty("/originPoi");
+        const endPoi = model.getProperty("/destinationPoi");
+
+        this.mapViewController.searchRoute(startPoi, endPoi);
     }
 }

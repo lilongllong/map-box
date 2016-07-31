@@ -1,65 +1,52 @@
 import ViewController from "sap/a/view/ViewController";
 
-
 import ServiceClient from "gd/service/ServiceClient";
 
-import PoiSearchView from "./PoiSearchView";
+import POISearchView from "./POISearchView";
 
-export default class PoiSearchViewController extends ViewController
+export default class POISearchViewController extends ViewController
 {
-
+    metadata = {
+    events: {
+        selected: { parameters: { selectedPoi: "object" } }
+    }
+};
     createView(options)
     {
-        const opts = $.extend({
-            poi: "{/selectedPoi}",
-            queryPoi: "{/queryPoi}"
-        }, options);
-        return new PoiSearchView("mb-poi-search-view", opts);
+        return new POISearchView("poi-search-view", options);
     }
 
-    initView()
+    afterInit()
     {
-        this.view.attachInputChanged(this._input_onchange.bind(this));
-        this.view.attachSearchPoi(this._searchPoi.bind(this));
-
-        this.view.suggestionListView.attachItemClick(this._suggestionListView_onItemclick.bind(this));
+        super.afterInit();
+        this.view.attachInputChanged(this._oninputChanged.bind(this));
+        this.view.attachItemSelected(this._onitemSelected.bind(this));
     }
 
-    _input_onchange(e)
+    _oninputChanged(e)
     {
-        ServiceClient.getInstance().searchPoiAutocomplete(this.view.getText()).then((result) => {
-            this.view.suggestionListView.setItems(result);
-            if (result && result.length)
-            {
-                this.view.suggestionListView.showSuggestion();
-            }
-            else
-            {
-                this.view.suggestionListView.hideSuggestion();
-            }
-        });
-    }
-
-    _searchPoi(e)
-    {
-        if (this.view.getText() !== "")
+        const keyword = this.view.getKeyWord();
+        if (keyword && keyword !== "")
         {
-            ServiceClient.getInstance().searchPoiAutocomplete(this.view.getText()).then((result) => {
-                if (result && result.length > 0)
-                {
-                    sap.ui.getCore().getModel().setProperty("/selectedPoi", {name: result[0].name, location: result[0].location});
-                    this.view.setText(result[0].name);
-                    this.view.suggestionListView.hide();
-                }
+            ServiceClient.getInstance().searchPoiAutocomplete(keyword).then((result) => {
+                console.log(result);
+                this.view.$suggestionListView.setItems(result);
+                this.view.$suggestionListView.show();
             });
+        }
+        else
+        {
+            console.log("input can not be empty");
         }
     }
 
-    _suggestionListView_onItemclick(e)
+    _onitemSelected(e)
     {
-        const item  = e.getParameters().item;
-        const model = sap.ui.getCore().getModel();
-        model.forceSetProperty("/selectedPoi", {name: item.name, location: item.location});
-        this.view.suggestionListView.hideSuggestion();
+        const item =  e.getParameters().item;
+        const selectedPoi = {
+            name: item.name,
+            location: item.location
+        }
+        this.fireSelected({selectedPoi});
     }
 }

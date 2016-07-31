@@ -21,20 +21,17 @@ export default class MapViewController extends AdaptiveMapViewController
         this.view.attachEvent("queryClickChanged", this._queryClickChanged_onchange.bind(this));
     }
 
-    searchRoute(locations)
+    searchRoute(startPoi, endPoi)
     {
-        if (locations && locations.length)
+        if (startPoi && endPoi)
         {
-            const startLocation = locations[0];
-            ServiceClient.getInstance().searchRoute(startLocation, endLocation).then(result => {
-                const endLocation = locations[locations.length - 1];
-                this.view.NaviLayer.applySettings({
-                    startLocation,
-                    endLocation
+            ServiceClient.getInstance().searchRoute(startPoi.location, endPoi.location).then(result => {
+                this.view.naviLayer.applySettings({
+                    startLocation: startPoi.location,
+                    endLocation: endPoi.location
                 });
-
-                this.view.NaviLayer.drawRoutes(result);
-                this.view.NaviLayer.fitBounds();
+                this.view.naviLayer.drawRoute(result);
+                this.view.naviLayer.fitBounds();
             });
         }
         else
