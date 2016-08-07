@@ -1,4 +1,4 @@
 # map-box
 A simple web map application using SAP UI5 and ES6.
 
-## 昨天的任务完成，暂更新到develop分支上
+## 仿照高德界面，使用leaflet和高德开发API进行实现
