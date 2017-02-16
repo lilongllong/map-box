@@ -16,8 +16,6 @@ export default class NaviLayer extends Layer
         this.container.addLayer(this.routeGroup);
         this.markerGroup = L.featureGroup();
         this.container.addLayer(this.markerGroup);
-        this.PoiMarkerGroup = L.featureGroup();
-        this.container.addLayer(this.markerGroup);
     }
 
     setStartLocation(location)
@@ -36,11 +34,12 @@ export default class NaviLayer extends Layer
 
     drawRoute(route)
     {
+        this.routeGroup.clearLayers();
         const multiPolyline = L.multiPolyline(route);
         this.routeGroup.addLayer(multiPolyline);
 
         const polylines = [];
-        result.reduce((prev, cur, index) => {
+        route.reduce((prev, cur, index) => {
             if (index !== 0)
             {
                 polylines.push([prev[prev.length - 1], cur[0]]);
@@ -50,25 +49,7 @@ export default class NaviLayer extends Layer
 
         polylines.map(loc => {
             this.routeGroup.addLayer(L.polyline(loc));
-            //L.polyline(loc).addTo(this.routeGroup);
         });
-    }
-
-    drawRoutes(locations)
-    {
-        this.routeGroup.clearLayers();
-        if (locations && locations.length)
-        {
-            locations.reduce((prev, cur) => {
-                if (prev !== null)
-                {
-                    this.drawRoute(prev, cur);
-                }
-                return cur;
-            }, null);
-
-        }
-
     }
 
     _updateStartMarker()

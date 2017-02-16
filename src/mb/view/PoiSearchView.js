@@ -2,22 +2,30 @@ import View from "sap/a/view/View";
 
 import SuggestionListView from "./SuggestionListView";
 
-export default class PoiSearchView extends View
+export default class POISearchView extends View
 {
     metadata = {
         properties: {
-            poi: {type: "object", bindable: true}
+            poi: { type: "object", bindable: true },
+            label: { type: "string" },
+            placeholder: { type: "string"}
         },
         events: {
-            inputChanged: { parameters: { param1: "string" } },
-            searchPoi: { parameters: {}}
+            inputChanged: { parameters: {  } },
+            itemSelected: { parameters: { item: "object" } }
         }
     };
+
     afterInit()
     {
-        this.poiSearchView = $(`<input class="searchInput" type="search" placeholder="搜索" />`);
-        let inputTimer = null;
-        this.poiSearchView.on("input", () => {
+        super.afterInit();
+        this.addStyleClass("poi-search-view");
+        this.$searchView = $(`<div class="search-view">
+                                <div class="text">${this.getProperty("label")}</div>
+                                <input type="text" placeholder=${this.getProperty("placeholder")} />
+                                </div>`);
+        let inputTimer = null
+        this.$searchView.children("input").on("input", () => {
             if (inputTimer)
             {
                 window.clearTimeout(inputTimer);
@@ -25,42 +33,47 @@ export default class PoiSearchView extends View
             }
             inputTimer = setTimeout(() => {
                 this.fireInputChanged();
-            }, 300);
-
+            }, 500);
         });
 
-        this.poiSearchView.on("keydown", this._keydown.bind(this));
-        this.$container.append(this.poiSearchView);
+        this.$searchView.children("input").on("focus", () => {
+            this.$suggestionListView.show();
+        });
 
-        this.suggestionListView = new SuggestionListView("suggestion-list-view");
-        this.suggestionListView.hideSuggestion();
-        this.addSubview(this.suggestionListView);
+        this.$searchView.children("input").on("blur", () => {
+            this.$suggestionListView.hide();
+        });
+
+        this.$container.append(this.$searchView);
+        this.$suggestionListView = new SuggestionListView("suggestion-list-view");
+        this.$suggestionListView.attachItemClick(this._onItemClick.bind(this));
+        this.addSubview(this.$suggestionListView, this.$(".search-view"));
+        this.$suggestionListView.hide();
     }
 
-    getText()
+    setPoi(poi)
     {
-        return this.poiSearchView.val().trim();
-    }
-
-    setText(keyword)
-    {
-        this.poiSearchView.val(keyword);
-    }
-
-    setPoi(value)
-    {
-        this.setProperty("poi", value);
-        if (value !== null)
+        this.setProperty("poi", poi);
+        if (poi)
         {
-            this.setText(value.name);
+            this.setKeyWord(poi.name);
+            this.$suggestionListView.hide();
         }
     }
 
-    _keydown(e)
+    getKeyWord()
     {
-        if (e.keyCode === 13)
-        {
-            this.fireSearchPoi();
-        }
+        return this.$searchView.children("input").val().trim();
+    }
+
+    setKeyWord(keyword)
+    {
+        this.$searchView.children("input").val(keyword);
+    }
+
+    _onItemClick(e)
+    {
+        const item = e.getParameters().item;
+        this.fireItemSelected({item});
     }
 }

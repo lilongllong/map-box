@@ -5,8 +5,16 @@ export default class Model extends JSONModel
     constructor(...args)
     {
         super({
-            selectedPoi: null,
-            queryPoi: null
+            originPoi: {name: null, location: null},
+            destinationPoi: {name: null, location: null}
         });
     }
+
+    forceSetProperty(sPath, oValue, oContent, bAsyncUpdate)
+    {
+        const result = this.setProperty(sPath, oValue, oContent, bAsyncUpdate);
+        this.checkUpdate(true, false);
+        return result;
+    }
+
 }

@@ -1,0 +1,67 @@
+.OD-search-view
+{
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    z-index: 1;
+    height: 160px;
+    width: 300px;
+    background: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+
+    > .icon-exchange
+    {
+        margin-top: 40px;
+        margin-left: 0px;
+        flex: 0 0 40px;
+        height: 90px;
+        font-size: 40px;
+    }
+
+    > .OD-search-Input-view
+    {
+        flex: 0 0 240px;
+        height: 100px;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        z-index: 1;
+        > .origin-search
+        {
+            flex: 0 0 42px;
+            display: flex;
+            flex-direction: row;
+            padding: 4px;
+            width: 240px;
+            z-index: 3;
+        }
+
+        > .destination-search
+        {
+            flex: 0 0 42px;
+            display: flex;
+            flex-direction: row;
+            padding: 4px;
+            width: 240px;
+            z-index: 2;
+        }
+    }
+
+    > .search-route-button
+    {
+        position: absolute;
+        width: 84px;
+        height: 32px;
+        bottom: 5px;
+        right: 27px;
+    }
+
+
+}
