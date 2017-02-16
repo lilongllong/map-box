@@ -4,6 +4,7 @@
   "description": "A simple web map application.",
   "main": "index.js",
   "scripts": {
+    "start": "gulp dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -32,5 +33,8 @@
     "ui5-loader": "^1.0.3",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+    "babel-cli": "^6.23.0"
   }
 }
